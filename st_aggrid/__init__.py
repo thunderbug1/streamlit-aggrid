@@ -152,9 +152,12 @@ def AgGrid(
         gb = GridOptionsBuilder.from_dataframe(dataframe,**default_column_parameters)
         gridOptions = gb.build()
 
-    @st.cache
+    @st.experimental_memo
     def get_row_data(df):
         def cast_to_serializable(value):
+            if isinstance(value, pd.DataFrame):
+                return get_row_data(value)
+
             isoformat = getattr(value, 'isoformat', None)
             
             if ((isoformat) and callable(isoformat)):
@@ -168,7 +171,7 @@ def AgGrid(
             else:
                 return value.__str__()
         
-        json_frame = dataframe.applymap(cast_to_serializable) 
+        json_frame = df.applymap(cast_to_serializable) 
         row_data = json_frame.to_dict(orient="records")
         row_data = simplejson.dumps(row_data, ignore_nan=True)
         return row_data
