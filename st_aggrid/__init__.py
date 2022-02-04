@@ -252,11 +252,11 @@ def AgGrid(
                 if text_columns:
                     frame.loc[:,text_columns]  = frame.loc[:,text_columns].astype(str)
 
-                date_columns = [k for k,v in original_types.items() if v == "M"]
+                date_columns = [k for k,v in original_types.items() if v in ['M']]
                 if date_columns:
                     frame.loc[:,date_columns] = frame.loc[:,date_columns].apply(pd.to_datetime, errors=conversion_errors)
 
-                timedelta_columns = [k for k,v in original_types.items() if v == "m"]
+                timedelta_columns = [k for k,v in original_types.items() if v in ['m']]
                 if timedelta_columns:
                     def cast_to_timedelta(s):
                         try:
